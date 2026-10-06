@@ -237,7 +237,7 @@ function Index() {
             <span className="channel-count">{filteredChannels.length}</span>
           </div>
 
-          <div className="group-scroller" aria-label="Categorias de canais">
+          <div className="group-scroller" aria-label="Categorias de canais" onKeyDown={handleGroupKeys}>
             {groups.map((group) => (
               <Button
                 key={group}
@@ -252,7 +252,7 @@ function Index() {
             ))}
           </div>
 
-          <div className="channel-list">
+          <div className="channel-list" onKeyDown={handleChannelKeys}>
             {loading ? (
               <EmptyState icon={<Radio />} text="Carregando canais…" />
             ) : filteredChannels.length === 0 ? (
