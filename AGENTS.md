@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep the RG2 TV player as a single responsive route, using a desktop sidebar and a player-first mobile flow for reliable TV browsing across device sizes.
