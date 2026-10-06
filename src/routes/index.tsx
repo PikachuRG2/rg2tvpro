@@ -105,18 +105,38 @@ function Index() {
     };
   }, []);
 
+  const favoriteSet = useMemo(() => new Set(favorites), [favorites]);
   const groups = useMemo(
-    () => ["Todos", ...new Set(channels.map((channel) => channel.group).filter(Boolean))],
+    () => [
+      "Todos",
+      FAVORITES_GROUP,
+      ...new Set(channels.map((channel) => channel.group).filter(Boolean)),
+    ],
     [channels],
   );
   const filteredChannels = useMemo(() => {
     const normalizedQuery = query.toLocaleLowerCase("pt-BR").trim();
     return channels.filter(
       (channel) =>
-        (activeGroup === "Todos" || channel.group === activeGroup) &&
+        (activeGroup === "Todos" ||
+          (activeGroup === FAVORITES_GROUP ? favoriteSet.has(channel.url) : channel.group === activeGroup)) &&
         (!normalizedQuery || channel.name.toLocaleLowerCase("pt-BR").includes(normalizedQuery)),
     );
-  }, [activeGroup, channels, query]);
+  }, [activeGroup, channels, favoriteSet, query]);
+
+  function toggleFavorite(channel: Channel) {
+    setFavorites((current) => {
+      const next = current.includes(channel.url)
+        ? current.filter((url) => url !== channel.url)
+        : [...current, channel.url];
+      try {
+        window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+      } catch {
+        // armazenamento indisponível; mantém apenas em memória
+      }
+      return next;
+    });
+  }
 
   async function play(channel: Channel) {
     const video = videoRef.current;
