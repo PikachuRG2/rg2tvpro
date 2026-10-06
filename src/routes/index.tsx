@@ -233,29 +233,49 @@ function Index() {
             {loading ? (
               <EmptyState icon={<Radio />} text="Carregando canais…" />
             ) : filteredChannels.length === 0 ? (
-              <EmptyState icon={<WifiOff />} text={channels.length ? "Nenhum canal encontrado" : "Lista de canais indisponível"} />
+              activeGroup === FAVORITES_GROUP && !query.trim() ? (
+                <EmptyState icon={<Star />} text="Toque na estrela de um canal para favoritá-lo" />
+              ) : (
+                <EmptyState icon={<WifiOff />} text={channels.length ? "Nenhum canal encontrado" : "Lista de canais indisponível"} />
+              )
             ) : (
-              filteredChannels.map((channel) => (
-                <button
-                  type="button"
-                  key={`${channel.group}-${channel.name}-${channel.url}`}
-                  className={cn("channel-row", activeChannel?.url === channel.url && "is-active")}
-                  onClick={() => void play(channel)}
-                >
-                  <span className="channel-logo">
-                    {channel.logo ? (
-                      <img src={channel.logo} alt="" loading="lazy" />
-                    ) : (
-                      <Tv className="size-5" aria-hidden="true" />
-                    )}
-                  </span>
-                  <span className="min-w-0 text-left">
-                    <strong>{channel.name}</strong>
-                    <small>{channel.group}</small>
-                  </span>
-                  <span className="play-indicator" aria-hidden="true" />
-                </button>
-              ))
+              filteredChannels.map((channel) => {
+                const isFavorite = favoriteSet.has(channel.url);
+                return (
+                  <div
+                    key={`${channel.group}-${channel.name}-${channel.url}`}
+                    className={cn("channel-row", activeChannel?.url === channel.url && "is-active")}
+                  >
+                    <button
+                      type="button"
+                      className="channel-main"
+                      onClick={() => void play(channel)}
+                    >
+                      <span className="channel-logo">
+                        {channel.logo ? (
+                          <img src={channel.logo} alt="" loading="lazy" />
+                        ) : (
+                          <Tv className="size-5" aria-hidden="true" />
+                        )}
+                      </span>
+                      <span className="min-w-0 text-left">
+                        <strong>{channel.name}</strong>
+                        <small>{channel.group}</small>
+                      </span>
+                      <span className="play-indicator" aria-hidden="true" />
+                    </button>
+                    <button
+                      type="button"
+                      className={cn("favorite-toggle", isFavorite && "is-favorite")}
+                      onClick={() => toggleFavorite(channel)}
+                      aria-pressed={isFavorite}
+                      aria-label={isFavorite ? `Remover ${channel.name} dos favoritos` : `Favoritar ${channel.name}`}
+                    >
+                      <Star className="size-4" aria-hidden="true" fill={isFavorite ? "currentColor" : "none"} />
+                    </button>
+                  </div>
+                );
+              })
             )}
           </div>
         </aside>
