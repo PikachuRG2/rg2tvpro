@@ -138,6 +138,29 @@ function Index() {
     });
   }
 
+  // Navegação por controle remoto / teclado (setas + OK)
+  function handleChannelKeys(event: React.KeyboardEvent) {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    const items = Array.from(document.querySelectorAll<HTMLElement>(".channel-main"));
+    const index = items.indexOf(document.activeElement as HTMLElement);
+    if (index === -1) return;
+    event.preventDefault();
+    const next = event.key === "ArrowDown" ? index + 1 : index - 1;
+    items[Math.min(Math.max(next, 0), items.length - 1)]?.focus();
+  }
+
+  function handleGroupKeys(event: React.KeyboardEvent) {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    const items = Array.from(document.querySelectorAll<HTMLElement>(".group-scroller button"));
+    const index = items.indexOf(document.activeElement as HTMLElement);
+    if (index === -1) return;
+    event.preventDefault();
+    const next = event.key === "ArrowRight" ? index + 1 : index - 1;
+    const target = items[Math.min(Math.max(next, 0), items.length - 1)];
+    target?.focus();
+    target?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  }
+
   async function play(channel: Channel) {
     const video = videoRef.current;
     if (!video) return;
@@ -214,7 +237,7 @@ function Index() {
             <span className="channel-count">{filteredChannels.length}</span>
           </div>
 
-          <div className="group-scroller" aria-label="Categorias de canais">
+          <div className="group-scroller" aria-label="Categorias de canais" onKeyDown={handleGroupKeys}>
             {groups.map((group) => (
               <Button
                 key={group}
@@ -229,7 +252,7 @@ function Index() {
             ))}
           </div>
 
-          <div className="channel-list">
+          <div className="channel-list" onKeyDown={handleChannelKeys}>
             {loading ? (
               <EmptyState icon={<Radio />} text="Carregando canais…" />
             ) : filteredChannels.length === 0 ? (
