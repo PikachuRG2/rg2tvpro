@@ -57,6 +57,19 @@ function parseM3U(text: string): Channel[] {
   return result;
 }
 
+const FAVORITES_GROUP = "Favoritos";
+const FAVORITES_KEY = "rg2tv-favorites";
+
+function loadFavorites(): string[] {
+  try {
+    const raw = window.localStorage.getItem(FAVORITES_KEY);
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
 function Index() {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [activeGroup, setActiveGroup] = useState("Todos");
@@ -64,6 +77,7 @@ function Index() {
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState("Carregando sua lista de canais…");
   const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState<string[]>(loadFavorites);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
 
