@@ -194,7 +194,23 @@ function Index() {
       return;
     }
 
-    const player = new HlsPlayer({ enableWorker: true, maxBufferLength: 30 });
+    const player = new HlsPlayer({
+      enableWorker: true,
+      lowLatencyMode: false,
+      capLevelToPlayerSize: true,
+      startLevel: -1,
+      abrEwmaDefaultEstimate: 1_500_000,
+      abrBandWidthFactor: 0.8,
+      abrBandWidthUpFactor: 0.6,
+      maxBufferLength: 60,
+      maxMaxBufferLength: 120,
+      backBufferLength: 30,
+      liveSyncDurationCount: 4,
+      fragLoadingMaxRetry: 6,
+      manifestLoadingMaxRetry: 4,
+      levelLoadingMaxRetry: 4,
+    });
+    let mediaRecoveries = 0;
     hlsRef.current = player;
     player.loadSource(source);
     player.attachMedia(video);
@@ -203,7 +219,18 @@ function Index() {
       void video.play().catch(() => undefined);
     });
     player.on(HlsPlayer.Events.ERROR, (_, data) => {
-      if (data.fatal) setStatus("O canal está indisponível no momento.");
+      if (!data.fatal) return;
+      if (data.type === HlsPlayer.ErrorTypes.MEDIA_ERROR && mediaRecoveries < 3) {
+        mediaRecoveries += 1;
+        player.recoverMediaError();
+        return;
+      }
+      if (data.type === HlsPlayer.ErrorTypes.NETWORK_ERROR && mediaRecoveries < 3) {
+        mediaRecoveries += 1;
+        player.startLoad();
+        return;
+      }
+      setStatus("O canal está indisponível no momento.");
     });
   }
 
