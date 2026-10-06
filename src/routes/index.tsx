@@ -32,11 +32,12 @@ function parseM3U(text: string): Channel[] {
 
   for (let index = 0; index < lines.length; index += 1) {
     const info = lines[index];
+    if (!info) continue;
     if (!info.startsWith("#EXTINF")) continue;
 
     let url = "";
     for (let cursor = index + 1; cursor < lines.length; cursor += 1) {
-      const candidate = lines[cursor].trim();
+      const candidate = lines[cursor]?.trim() ?? "";
       if (!candidate || candidate.startsWith("#")) continue;
       url = candidate;
       index = cursor;
