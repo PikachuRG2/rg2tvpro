@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Radio, Search, Tv, Wifi, WifiOff } from "lucide-react";
+import { Radio, Search, Star, Tv, Wifi, WifiOff } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type Hls from "hls.js";
 
