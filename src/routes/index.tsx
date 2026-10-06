@@ -116,8 +116,10 @@ function Index() {
     video.removeAttribute("src");
     video.load();
 
+    const source = `/api/public/proxy?url=${encodeURIComponent(channel.url)}`;
+
     if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = channel.url;
+      video.src = source;
       video.addEventListener(
         "loadedmetadata",
         () => {
@@ -137,7 +139,7 @@ function Index() {
 
     const player = new HlsPlayer({ enableWorker: true, maxBufferLength: 30 });
     hlsRef.current = player;
-    player.loadSource(channel.url);
+    player.loadSource(source);
     player.attachMedia(video);
     player.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
       setStatus("Ao vivo");
