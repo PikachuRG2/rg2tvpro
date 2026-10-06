@@ -186,9 +186,13 @@
 .group-scroller { display: flex; flex-wrap: nowrap; gap: 7px; padding: 0 14px 14px; overflow-x: auto; scrollbar-width: none; }
 .group-scroller::-webkit-scrollbar { display: none; }
 .channel-list { flex: 1; padding: 5px 8px 18px; overflow-y: auto; overscroll-behavior: contain; }
-.channel-row { width: 100%; display: grid; grid-template-columns: 42px minmax(0, 1fr) 8px; align-items: center; gap: 10px; min-height: 58px; padding: 8px 10px; border: 0; border-radius: var(--radius); background: transparent; color: var(--foreground); cursor: pointer; }
+.channel-row { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px; min-height: 58px; padding: 8px 6px 8px 10px; border: 0; border-radius: var(--radius); background: transparent; color: var(--foreground); }
 .channel-row:hover, .channel-row.is-active { background: var(--accent); }
 .channel-row.is-active { box-shadow: inset 3px 0 var(--primary); }
+.channel-main { min-width: 0; display: grid; grid-template-columns: 42px minmax(0, 1fr) 8px; align-items: center; gap: 10px; border: 0; background: transparent; color: inherit; cursor: pointer; text-align: left; padding: 0; }
+.favorite-toggle { width: 34px; height: 34px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--muted-foreground); cursor: pointer; }
+.favorite-toggle:hover { background: var(--secondary); color: var(--foreground); }
+.favorite-toggle.is-favorite { color: var(--primary); }
 .channel-logo { width: 42px; height: 42px; display: grid; place-items: center; overflow: hidden; border: 1px solid var(--border); border-radius: 6px; background: var(--secondary); color: var(--muted-foreground); }
 .channel-logo img { width: 100%; height: 100%; object-fit: contain; }
 .channel-row strong, .channel-row small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
