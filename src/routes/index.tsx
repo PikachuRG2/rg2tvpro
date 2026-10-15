@@ -70,8 +70,12 @@ function loadFavorites(): string[] {
   }
 }
 
+type QualityLevel = { index: number; label: string };
+
 function Index() {
   const [channels, setChannels] = useState<Channel[]>([]);
+  const [qualities, setQualities] = useState<QualityLevel[]>([]);
+  const [activeQuality, setActiveQuality] = useState(-1); // -1 = Automático
   const [activeGroup, setActiveGroup] = useState("Todos");
   const [activeChannel, setActiveChannel] = useState<Channel | null>(null);
   const [query, setQuery] = useState("");
@@ -167,6 +171,8 @@ function Index() {
 
     setActiveChannel(channel);
     setStatus("Conectando ao canal…");
+    setQualities([]);
+    setActiveQuality(-1);
     hlsRef.current?.destroy();
     hlsRef.current = null;
     video.pause();
@@ -216,6 +222,17 @@ function Index() {
     player.attachMedia(video);
     player.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
       setStatus("Ao vivo");
+      const levels = player.levels
+        .map((level, index) => ({
+          index,
+          label: level.height ? `${level.height}p` : `${Math.round(level.bitrate / 1000)} kbps`,
+        }))
+        .sort((a, b) => {
+          const ha = player.levels[a.index]?.height ?? 0;
+          const hb = player.levels[b.index]?.height ?? 0;
+          return hb - ha;
+        });
+      setQualities(levels.length > 1 ? levels : []);
       void video.play().catch(() => undefined);
     });
     player.on(HlsPlayer.Events.ERROR, (_, data) => {
@@ -232,6 +249,13 @@ function Index() {
       }
       setStatus("O canal está indisponível no momento.");
     });
+  }
+
+  function setQuality(index: number) {
+    const player = hlsRef.current;
+    if (!player) return;
+    player.currentLevel = index; // -1 volta para Automático
+    setActiveQuality(index);
   }
 
   return (
@@ -350,6 +374,31 @@ function Index() {
               <span /> {status}
             </div>
           </div>
+          {qualities.length > 0 && (
+            <div className="quality-scroller" aria-label="Qualidade de reprodução">
+              <Button
+                type="button"
+                size="chip"
+                variant={activeQuality === -1 ? "primary" : "secondary"}
+                onClick={() => setQuality(-1)}
+                aria-pressed={activeQuality === -1}
+              >
+                Automático
+              </Button>
+              {qualities.map((quality) => (
+                <Button
+                  key={quality.index}
+                  type="button"
+                  size="chip"
+                  variant={activeQuality === quality.index ? "primary" : "secondary"}
+                  onClick={() => setQuality(quality.index)}
+                  aria-pressed={activeQuality === quality.index}
+                >
+                  {quality.label}
+                </Button>
+              ))}
+            </div>
+          )}
         </main>
       </div>
     </div>
