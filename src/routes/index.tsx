@@ -222,6 +222,17 @@ function Index() {
     player.attachMedia(video);
     player.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
       setStatus("Ao vivo");
+      const levels = player.levels
+        .map((level, index) => ({
+          index,
+          label: level.height ? `${level.height}p` : `${Math.round(level.bitrate / 1000)} kbps`,
+        }))
+        .sort((a, b) => {
+          const ha = player.levels[a.index]?.height ?? 0;
+          const hb = player.levels[b.index]?.height ?? 0;
+          return hb - ha;
+        });
+      setQualities(levels.length > 1 ? levels : []);
       void video.play().catch(() => undefined);
     });
     player.on(HlsPlayer.Events.ERROR, (_, data) => {
