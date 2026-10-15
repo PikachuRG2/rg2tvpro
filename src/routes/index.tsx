@@ -251,6 +251,13 @@ function Index() {
     });
   }
 
+  function setQuality(index: number) {
+    const player = hlsRef.current;
+    if (!player) return;
+    player.currentLevel = index; // -1 volta para Automático
+    setActiveQuality(index);
+  }
+
   return (
     <div className="tv-app">
       <header className="app-header">
