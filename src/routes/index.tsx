@@ -70,8 +70,12 @@ function loadFavorites(): string[] {
   }
 }
 
+type QualityLevel = { index: number; label: string };
+
 function Index() {
   const [channels, setChannels] = useState<Channel[]>([]);
+  const [qualities, setQualities] = useState<QualityLevel[]>([]);
+  const [activeQuality, setActiveQuality] = useState(-1); // -1 = Automático
   const [activeGroup, setActiveGroup] = useState("Todos");
   const [activeChannel, setActiveChannel] = useState<Channel | null>(null);
   const [query, setQuery] = useState("");
