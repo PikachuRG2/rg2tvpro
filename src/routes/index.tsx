@@ -374,6 +374,31 @@ function Index() {
               <span /> {status}
             </div>
           </div>
+          {qualities.length > 0 && (
+            <div className="quality-scroller" aria-label="Qualidade de reprodução">
+              <Button
+                type="button"
+                size="chip"
+                variant={activeQuality === -1 ? "primary" : "secondary"}
+                onClick={() => setQuality(-1)}
+                aria-pressed={activeQuality === -1}
+              >
+                Automático
+              </Button>
+              {qualities.map((quality) => (
+                <Button
+                  key={quality.index}
+                  type="button"
+                  size="chip"
+                  variant={activeQuality === quality.index ? "primary" : "secondary"}
+                  onClick={() => setQuality(quality.index)}
+                  aria-pressed={activeQuality === quality.index}
+                >
+                  {quality.label}
+                </Button>
+              ))}
+            </div>
+          )}
         </main>
       </div>
     </div>
