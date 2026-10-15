@@ -171,6 +171,8 @@ function Index() {
 
     setActiveChannel(channel);
     setStatus("Conectando ao canal…");
+    setQualities([]);
+    setActiveQuality(-1);
     hlsRef.current?.destroy();
     hlsRef.current = null;
     video.pause();
