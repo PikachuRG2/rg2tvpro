@@ -1,5 +1,2 @@
 # Administração RG2 TV
-- [ ] Login e botão Painel para administradores verificados.
-- [ ] Painel protegido: usuários, online, endereços e motoboys.
-- [ ] Localização com consentimento, interrupção e acesso restrito.
-- [ ] Testes de regras e verificação do fluxo.
+- [x] Interromper a atualização de administração e localização conforme cancelamento do usuário; não continuar a implementação.
