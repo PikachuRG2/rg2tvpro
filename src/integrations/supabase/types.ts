@@ -14,16 +14,115 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clients: {
+        Row: {
+          address: string
+          created_at: string
+          id: string
+          name: string
+          notes: string
+          phone: string
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          id?: string
+          name: string
+          notes?: string
+          phone?: string
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string
+          phone?: string
+        }
+        Relationships: []
+      }
+      user_locations: {
+        Row: {
+          accuracy: number | null
+          consent: boolean
+          latitude: number | null
+          longitude: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accuracy?: number | null
+          consent?: boolean
+          latitude?: number | null
+          longitude?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accuracy?: number | null
+          consent?: boolean
+          latitude?: number | null
+          longitude?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_presence: {
+        Row: {
+          last_seen: string
+          user_id: string
+        }
+        Insert: {
+          last_seen?: string
+          user_id: string
+        }
+        Update: {
+          last_seen?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      leave_presence: { Args: never; Returns: undefined }
+      set_location_consent: { Args: { allowed: boolean }; Returns: undefined }
+      touch_presence: { Args: never; Returns: undefined }
+      update_my_location: {
+        Args: { acc: number; lat: number; lng: number }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "courier"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +249,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "courier"],
+    },
   },
 } as const
